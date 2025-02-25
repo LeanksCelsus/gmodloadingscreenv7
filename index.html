@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            background: black; /* Fond noir pour éviter le vide */
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Conteneur de l'image pour qu'elle garde sa taille normale */
+        .background-container {
+            width: 100%;
+            height: 100%;
+            background: url('https://media.discordapp.net/attachments/707216114794627152/1343635758292013127/Frame_21233170.png?ex=67bdfdd0&is=67bcac50&hm=010f300b7e4c8213afcdaa8e552a9734ff3ba39379e06ab19f1910cd4e63e177&=&format=webp&quality=lossless&width=1202&height=676') no-repeat center center;
+            background-size: contain; /* Affiche l'image en entier sans l'agrandir */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-container"></div>
+
+    <audio id="music" autoplay loop>
+        <source src="https://files.catbox.moe/ns3yj8.mp3" type="audio/mpeg">
+        Votre navigateur ne supporte pas l'audio HTML5.
+    </audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let music = document.getElementById("music");
+
+            // Démarre la musique en mode silencieux pour contourner le blocage
+            music.volume = 0;
+            let playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("Musique jouée automatiquement !");
+                    setTimeout(() => {
+                        music.volume = 0.5; // Réduction du volume à 50%
+                    }, 500);
+                }).catch(error => {
+                    console.warn("Autoplay bloqué. Attente d'une interaction...");
+                    
+                    const unlockAudio = () => {
+                        music.play().then(() => {
+                            console.log("Musique forcée après interaction !");
+                            music.volume = 0.5; // Réduction du volume à 50%
+                            document.removeEventListener("click", unlockAudio);
+                            document.removeEventListener("mousemove", unlockAudio);
+                            document.removeEventListener("touchstart", unlockAudio);
+                        }).catch(err => {
+                            console.error("Impossible de jouer la musique :", err);
+                        });
+                    };
+
+                    document.addEventListener("click", unlockAudio);
+                    document.addEventListener("mousemove", unlockAudio);
+                    document.addEventListener("touchstart", unlockAudio);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
